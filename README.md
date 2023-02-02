@@ -9,6 +9,7 @@
     <li><a href="#-built-with-">🛠 Built With</a></li>
     <li><a href="#-getting-started-">💻 Getting Started</a></li>
     <li><a href="#-authors-">👥 Authors </a></li>
+    <li><a href="#-future-features-">🔭 Future Features</a></li>
     <li><a href="#-contributing-">🤝 Contributing</a></li>
     <li><a href="#️-show-your-support-">⭐️ Show your support </a></li>
     <li><a href="#-acknowledgments-">🙏 Acknowledgments </a></li>
@@ -94,6 +95,14 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 - GitHub: [@Shisui6](https://github.com/Shisui6)
 - LinkedIn: [LinkedIn](https://www.linkedin.com/in/okemdi-udeh)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- FUTURE FEATURES -->
+
+## 🔭 Future Features <a name="future-features"></a>
+
+- [ ] Add rails
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
