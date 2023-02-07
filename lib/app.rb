@@ -42,10 +42,57 @@ class App
     puts "Person created successfully\n\n"
   end
 
+  def handle_student
+    print 'Age:'
+    age = gets.chomp
+    print 'Name:'
+    name = gets.chomp
+    print 'Has parent permission? [Y/N]:'
+    permission = gets.chomp.downcase
+    case permission
+    when 'y'
+      permission = true
+      create_student(age, name, permission)
+    when 'n'
+      permission = false
+      create_student(age, name, permission)
+    else
+      puts "Invalid input, please try again\n\n"
+    end
+  end
+
+  def handle_teacher
+    print 'Age:'
+    age = gets.chomp
+    print 'Name:'
+    name = gets.chomp
+    print 'Specialization:'
+    specialization = gets.chomp
+    create_teacher(age, name, specialization)
+  end
+
+  def handle_person
+    print 'Do you want to create a student (1) or a teacher (2)? [Input the number]:'
+    choice = gets.chomp
+    case choice
+    when '1' then handle_student
+    when '2' then handle_teacher
+    else puts "Invalid input. Please try again\n\n"
+    end
+  end
+
   def create_book(title, author)
     book = Book.new(title, author)
     @books << book
     puts "Book created successfully\n\n"
+  end
+
+  def handle_book
+    print 'Title:'
+    title = gets.chomp
+    print 'Author:'
+    author = gets.chomp
+    create_book(title, author)
   end
 
   def create_rental(date, person, book)
@@ -58,6 +105,36 @@ class App
     puts "Rental created successfully\n\n"
   end
 
+  def rental_check(book, person)
+    if @books[book.to_i].nil? || @people[person.to_i].nil? || book.length > 1 || person.length > 1
+      puts "Invalid input. Please try again\n\n"
+    else
+      puts ''
+      print 'Date:'
+      date = gets.chomp
+      create_rental(date, @people[person.to_i], @books[book.to_i])
+    end
+  end
+
+  def handle_rental
+    if @books.empty?
+      puts "No books saved\n\n"
+    else
+      puts 'Select a book from the following list by number'
+      @books.each { |book| puts "#{@books.index book}) Title: '#{book.title}', Author: #{book.author}" }
+      book = gets.chomp
+
+      puts ''
+      puts 'Select a person from the following list by number(not id)'
+      @people.each do |pers|
+        puts "#{@people.index pers}) [#{pers.class.name}] Name: #{pers.name}, ID: #{pers.id}, Age: #{pers.age}"
+      end
+      person = gets.chomp
+
+      rental_check(book, person)
+    end
+  end
+
   def list_rentals(id)
     if @rentals[id]
       puts 'Rentals:'
@@ -67,5 +144,11 @@ class App
       puts ''
       puts "No rentals for this person\n\n"
     end
+  end
+
+  def handle_rental_list
+    print 'ID of person: '
+    id = gets.chomp
+    list_rentals(id)
   end
 end
