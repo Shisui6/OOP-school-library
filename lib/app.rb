@@ -168,10 +168,47 @@ class App
     File.write('books.json', JSON.generate(arr))
   end
 
+  def save_people
+    arr = []
+    @people.each do |person|
+
+      if person.class.name == 'Teacher'
+        arr << {
+          name: person.name,
+          age: person.age,
+          specialization: person.specialization
+        }
+      else
+        arr << {
+          name: person.name,
+          age: person.age,
+          permission: person.parent_permission
+        }
+      end
+    end
+    File.write('people.json', JSON.generate(arr))
+  end
+
   def read_file
-    return unless File.exist?('rentals.json')
+    return unless File.exist?('books.json')
 
     content = JSON.parse(File.read('books.json'))
     content.each { |item| create_book_from_file(item['title'], item['author']) }
+  end
+
+  def read_people_file
+    return unless File.exist?('people.json')
+
+    content = JSON.parse(File.read('people.json'))
+    content.each { |item| 
+      if item['specialization']
+      create_book_from_file(item['title'], item['author'])
+        teacher = Teacher.new(item['name'], item['age'], item['specialization'])
+        @people << teacher
+      else
+        student = Student.new(item['name'], item['age'], item['permission'])
+        @people << student
+      end
+    }
   end
 end
