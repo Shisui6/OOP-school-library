@@ -3,8 +3,92 @@ require './teacher'
 require './book'
 require './rental'
 
+module FileReader
+  def read_book_file
+    return unless File.exist?('books.json')
+
+    content = JSON.parse(File.read('books.json'))
+    content.each { |item| create_book_from_file(item['title'], item['author']) }
+  end
+
+  def read_people_file
+    return unless File.exist?('people.json')
+
+    content = JSON.parse(File.read('people.json'))
+    content.each do |item|
+      if item['specialization']
+        teacher = Teacher.new(item['name'], item['age'], item['specialization'])
+        @people << teacher
+      else
+        student = Student.new(item['name'], item['age'], item['permission'])
+        @people << student
+      end
+    end
+  end
+
+  def read_rentals_file
+    return unless File.exist?('rentals.json') && File.exist?('people.json') && File.exist?('books.json')
+
+    content = JSON.parse(File.read('rentals.json'))
+    content.each do |item|
+      rental = Rental.new(item['date'], @people[item['person'].to_i], @books[item['book'].to_i])
+      if @rentals[@people[item['person'].to_i].id]
+        @rentals[@people[item['person'].to_i].id] << rental
+      else
+        @rentals[@people[item['person'].to_i].id] = [rental]
+      end
+    end
+  end
+end
+
+module FileWriter
+  def save_books
+    arr = []
+    @books.each do |book|
+      arr << {
+        title: book.title,
+        author: book.author
+      }
+    end
+    File.write('books.json', JSON.generate(arr))
+  end
+
+  def save_people
+    arr = []
+    @people.each do |person|
+      arr << if person.instance_of?(::Teacher)
+               { name: person.name,
+                 age: person.age,
+                 specialization: person.specialization }
+             else
+               { name: person.name,
+                 age: person.age,
+                 permission: person.parent_permission }
+             end
+    end
+    File.write('people.json', JSON.generate(arr))
+  end
+
+  def save_rentals
+    arr = []
+    @rentals.each_value do |rental|
+      rental.each do |item|
+        arr << {
+          date: item.date,
+          book: @books.index(item.book),
+          person: @people.index(item.person)
+        }
+      end
+    end
+    File.write('rentals.json', JSON.generate(arr))
+  end
+end
+
 class App
   attr_reader(:books, :people)
+
+  include FileReader
+  include FileWriter
 
   def initialize
     @books = []
@@ -155,60 +239,5 @@ class App
     print 'ID of person: '
     id = gets.chomp
     list_rentals(id)
-  end
-
-  def save_books
-    arr = []
-    @books.each do |book|
-      arr << {
-        title: book.title,
-        author: book.author
-      }
-    end
-    File.write('books.json', JSON.generate(arr))
-  end
-
-  def save_people
-    arr = []
-    @people.each do |person|
-
-      if person.class.name == 'Teacher'
-        arr << {
-          name: person.name,
-          age: person.age,
-          specialization: person.specialization
-        }
-      else
-        arr << {
-          name: person.name,
-          age: person.age,
-          permission: person.parent_permission
-        }
-      end
-    end
-    File.write('people.json', JSON.generate(arr))
-  end
-
-  def read_file
-    return unless File.exist?('books.json')
-
-    content = JSON.parse(File.read('books.json'))
-    content.each { |item| create_book_from_file(item['title'], item['author']) }
-  end
-
-  def read_people_file
-    return unless File.exist?('people.json')
-
-    content = JSON.parse(File.read('people.json'))
-    content.each { |item| 
-      if item['specialization']
-      create_book_from_file(item['title'], item['author'])
-        teacher = Teacher.new(item['name'], item['age'], item['specialization'])
-        @people << teacher
-      else
-        student = Student.new(item['name'], item['age'], item['permission'])
-        @people << student
-      end
-    }
   end
 end

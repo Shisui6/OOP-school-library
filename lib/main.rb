@@ -5,7 +5,7 @@ def exit_option(app)
   puts 'Thank you for using this app!'
   app.save_books
   app.save_people
-
+  app.save_rentals
   exit
 end
 
@@ -24,8 +24,9 @@ end
 def main
   puts "Welcome to School Library App!\n\n"
   app = App.new
-  app.read_file
+  app.read_book_file
   app.read_people_file
+  app.read_rentals_file
   choice = 0
   while choice != '7'
     puts 'Please choose an option by entering a number:'
