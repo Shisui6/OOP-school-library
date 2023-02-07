@@ -87,6 +87,11 @@ class App
     puts "Book created successfully\n\n"
   end
 
+  def create_book_from_file(title, author)
+    book = Book.new(title, author)
+    @books << book
+  end
+
   def handle_book
     print 'Title:'
     title = gets.chomp
@@ -150,5 +155,23 @@ class App
     print 'ID of person: '
     id = gets.chomp
     list_rentals(id)
+  end
+
+  def save_books
+    arr = []
+    @books.each do |book|
+      arr << {
+        title: book.title,
+        author: book.author
+      }
+    end
+    File.write('books.json', JSON.generate(arr))
+  end
+
+  def read_file
+    return unless File.exist?('rentals.json')
+
+    content = JSON.parse(File.read('books.json'))
+    content.each { |item| create_book_from_file(item['title'], item['author']) }
   end
 end

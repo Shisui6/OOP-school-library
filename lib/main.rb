@@ -1,7 +1,9 @@
 require './app'
+require 'json'
 
-def exit_option
+def exit_option(app)
   puts 'Thank you for using this app!'
+  app.save_books
   exit
 end
 
@@ -20,6 +22,7 @@ end
 def main
   puts "Welcome to School Library App!\n\n"
   app = App.new
+  app.read_file
   choice = 0
   while choice != '7'
     puts 'Please choose an option by entering a number:'
@@ -31,7 +34,7 @@ def main
     puts '6 - List all rentals for a given person id'
     puts '7 - Exit'
     choice = gets.chomp
-    exit_option if choice == '7'
+    exit_option(app) if choice == '7'
     process_choice(choice, app)
   end
 end
